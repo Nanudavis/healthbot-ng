@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HealthBot NG — Usability Survey</title>
+<style>
+  :root {
+    --ink:#0B3B37; --teal:#12756B; --teal-soft:#E3F0EE; --paper:#F4F7F6;
+    --line:#DCE6E4; --muted:#5C7370; --ng-green:#008751;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--paper); color: var(--ink); line-height:1.5;
+    padding: 0 0 40px;
+  }
+  header { background: var(--ink); color:#fff; padding:20px 18px; }
+  header b { font-size:17px; display:block; }
+  header small { color:#9FCFC7; font-size:12.5px; }
+  .wrap { max-width:620px; margin:0 auto; padding:0 16px; }
+  .card {
+    background:#fff; border:1px solid var(--line); border-radius:14px;
+    padding:16px; margin-top:16px;
+  }
+  .intro { font-size:13.5px; color:var(--muted); }
+  label.f { display:block; font-size:12px; font-weight:600; margin-bottom:5px; }
+  input[type=text], select, textarea {
+    width:100%; font:inherit; font-size:15px; padding:10px 12px;
+    border:1px solid var(--line); border-radius:10px; background:#fff;
+    color:var(--ink); margin-bottom:12px;
+  }
+  textarea { min-height:80px; resize:vertical; }
+  .q { padding:14px 0; border-bottom:1px dashed var(--line); }
+  .q:last-child { border-bottom:none; }
+  .q p { font-size:14.5px; margin-bottom:10px; }
+  .q .n { color:var(--teal); font-weight:700; margin-right:6px; }
+  .scale { display:flex; gap:6px; }
+  .scale label {
+    flex:1; text-align:center; font-size:11px; color:var(--muted);
+    border:1px solid var(--line); border-radius:10px; padding:9px 2px;
+    cursor:pointer; background:#fff; user-select:none;
+  }
+  .scale input { position:absolute; opacity:0; width:0; height:0; }
+  .scale label b { display:block; font-size:16px; color:var(--ink); }
+  .scale input:checked + span { }
+  .scale label:has(input:checked) {
+    background:var(--teal-soft); border-color:var(--teal); color:var(--teal);
+  }
+  .scale label:has(input:checked) b { color:var(--teal); }
+  .ends { display:flex; justify-content:space-between; font-size:11px;
+          color:var(--muted); margin-top:6px; }
+  button {
+    width:100%; font:inherit; font-size:16px; font-weight:600; color:#fff;
+    background:var(--teal); border:none; border-radius:12px; padding:14px;
+    margin-top:16px; cursor:pointer;
+  }
+  button:disabled { opacity:.6; cursor:default; }
+  .msg { margin-top:14px; font-size:14px; padding:12px; border-radius:10px; }
+  .ok { background:#E8F3E9; color:#2E7D32; }
+  .err { background:#FBE9E9; color:#B91C1C; }
+  .done { text-align:center; padding:40px 16px; }
+  .done .big { font-size:40px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <b>HealthBot NG</b>
+    <small>Usability survey · takes about 2 minutes</small>
+  </div>
+</header>
+
+<div class="wrap">
+  <div id="form-area">
+    <div class="card">
+      <p class="intro">
+        Thank you for trying HealthBot NG. Please answer honestly — there
+        are no right or wrong answers, and your responses are anonymous.
+        We do not collect your name or phone number.
+      </p>
+    </div>
+
+    <form id="sus">
+      <div class="card">
+        <label class="f" for="code">Participant code (given by the researcher)</label>
+        <input type="text" id="code" name="code" placeholder="e.g. P01" required>
+
+        <label class="f" for="language">Which language did you use?</label>
+        <select id="language" name="language">
+          <option value="english">English</option>
+          <option value="pidgin">Pidgin</option>
+          <option value="hausa">Hausa</option>
+          <option value="yoruba">Yoruba</option>
+          <option value="igbo">Igbo</option>
+        </select>
+
+        <label class="f" for="channel">How did you use it?</label>
+        <select id="channel" name="channel">
+          <option value="whatsapp">WhatsApp</option>
+          <option value="ussd">USSD (dial code)</option>
+        </select>
+      </div>
+
+      <div class="card" id="questions"></div>
+
+      <div class="card">
+        <label class="f" for="comments">Anything else you want to tell us? (optional)</label>
+        <textarea id="comments" name="comments"></textarea>
+      </div>
+
+      <button type="submit" id="submit">Submit survey</button>
+      <div id="msg"></div>
+    </form>
+  </div>
+
+  <div id="thanks" class="done" hidden>
+    <div class="big">✅</div>
+    <h2>Thank you</h2>
+    <p class="intro" style="margin-top:8px">Your response has been recorded.</p>
+  </div>
+</div>
+
+<script>
+const ITEMS = __ITEMS__;
+const qBox = document.getElementById('questions');
+ITEMS.forEach((text, i) => {
+  const n = i + 1;
+  const div = document.createElement('div');
+  div.className = 'q';
+  div.innerHTML =
+    '<p><span class="n">' + n + '.</span>' + text + '</p>' +
+    '<div class="scale">' +
+      [1,2,3,4,5].map(v =>
+        '<label><input type="radio" name="q' + n + '" value="' + v + '" required><b>' + v + '</b></label>'
+      ).join('') +
+    '</div>' +
+    '<div class="ends"><span>Strongly disagree</span><span>Strongly agree</span></div>';
+  qBox.appendChild(div);
+});
+
+document.getElementById('sus').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit');
+  const msg = document.getElementById('msg');
+  msg.textContent = '';
+  const answers = [];
+  for (let n = 1; n <= 10; n++) {
+    const picked = document.querySelector('input[name="q' + n + '"]:checked');
+    if (!picked) {
+      msg.className = 'msg err';
+      msg.textContent = 'Please answer question ' + n + '.';
+      return;
+    }
+    answers.push(Number(picked.value));
+  }
+  btn.disabled = true;
+  const body = new FormData();
+  body.append('participant_code', document.getElementById('code').value);
+  body.append('language', document.getElementById('language').value);
+  body.append('channel', document.getElementById('channel').value);
+  body.append('comments', document.getElementById('comments').value);
+  body.append('answers', answers.join(','));
+  try {
+    const res = await fetch('/api/sus', { method: 'POST', body });
+    if (!res.ok) {
+      const j = await res.json().catch(() => ({}));
+      throw new Error(j.detail || res.status);
+    }
+    document.getElementById('form-area').hidden = true;
+    document.getElementById('thanks').hidden = false;
+    window.scrollTo(0, 0);
+  } catch (err) {
+    btn.disabled = false;
+    msg.className = 'msg err';
+    msg.textContent = 'Could not submit: ' + err.message;
+  }
+});
+</script>
+</body>
+</html>

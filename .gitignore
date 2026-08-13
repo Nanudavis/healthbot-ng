@@ -1,0 +1,31 @@
+# Deploy-focused git repo for Railway (github build)
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+node_modules/
+dashboard/node_modules/
+
+# local development / thesis artifacts — not needed in the image
+tests/
+scripts/
+docs/
+eval/
+figures/
+*.docx
+*.pdf.tmp
+HealthBotNG_UI_Design.html
+comparison*
+README.md
+CLAUDE.md
+COMPLETION_GUIDE.md
+.env.example
+data/*.db
+data/*.db-journal
+dashboard/src/
+dashboard/package.json
+dashboard/package-lock.json
+dashboard/vite.config.js
+dashboard/index.html
+.DS_Store

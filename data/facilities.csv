@@ -1,0 +1,13 @@
+name,facility_type,state,lga,latitude,longitude
+Garki Primary Health Centre,PHC,FCT,AMAC,9.0290,7.4790
+Wuse District Hospital,GENERAL_HOSPITAL,FCT,AMAC,9.0765,7.4635
+National Hospital Abuja,TEACHING_HOSPITAL,FCT,AMAC,9.0290,7.4680
+Nyanya General Hospital,GENERAL_HOSPITAL,FCT,AMAC,8.9800,7.5700
+Kubwa General Hospital,GENERAL_HOSPITAL,FCT,Bwari,9.1550,7.3320
+Lagos University Teaching Hospital,TEACHING_HOSPITAL,Lagos,Mushin,6.5170,3.3530
+Lagos Island General Hospital,GENERAL_HOSPITAL,Lagos,Lagos Island,6.4510,3.3990
+Randle General Hospital Surulere,GENERAL_HOSPITAL,Lagos,Surulere,6.4930,3.3560
+Ikorodu General Hospital,GENERAL_HOSPITAL,Lagos,Ikorodu,6.6190,3.5100
+Aminu Kano Teaching Hospital,TEACHING_HOSPITAL,Kano,Tarauni,11.9760,8.5310
+Murtala Muhammad Specialist Hospital,GENERAL_HOSPITAL,Kano,Kano Municipal,11.9930,8.5140
+Kumbotso Primary Health Centre,PHC,Kano,Kumbotso,11.8890,8.5030
