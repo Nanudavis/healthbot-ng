@@ -123,6 +123,14 @@ def no_facility_reply(language: str) -> str:
     return NO_FACILITY_REPLIES.get(language, NO_FACILITY_REPLIES["english"])
 
 
+def count_facilities() -> int:
+    """Number of facility rows — used to decide whether to auto-seed."""
+    from sqlalchemy import func
+
+    with db.get_session() as session:
+        return int(session.execute(select(func.count()).select_from(Facility)).scalar() or 0)
+
+
 def seed_facilities(csv_path: str) -> int:
     """Replace the facilities table with the rows in the CSV."""
     db.init_db()

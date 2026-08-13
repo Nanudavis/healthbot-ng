@@ -52,6 +52,17 @@ async def lifespan(app: FastAPI):
     # An administrator's stored choice of model/key must survive a
     # restart, so apply it over the .env defaults before serving.
     settings.load_into_config()
+    if config.SEED_SAMPLE_FACILITIES:
+        from app import facilities
+
+        if facilities.count_facilities() == 0:
+            try:
+                n = facilities.seed_facilities(
+                    str(Path(config.PROTOCOLS_DIR).parent / "facilities.csv")
+                )
+                log.info("Seeded %d sample facilities", n)
+            except Exception:
+                log.warning("Sample facilities seed failed", exc_info=True)
     threading.Thread(target=rag.warm, daemon=True).start()
     outbound_stop = threading.Event()
     worker = None

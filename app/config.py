@@ -161,6 +161,15 @@ ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "")
 # (e.g. postgresql+psycopg://user:pass@host/healthbot).
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///data/healthbot.db")
 
+# Demonstration only: seed the facilities table from the bundled sample
+# CSV on startup when the table is empty. The sample CSV is illustrative;
+# replace it with an approved FMOH registry before any real use.
+SEED_SAMPLE_FACILITIES = os.getenv("SEED_SAMPLE_FACILITIES", "false").strip().lower() in (
+    "1",
+    "true",
+    "yes",
+)
+
 # Per-session history cap: enough for a full triage conversation,
 # small enough to keep prompts cheap.
 MAX_HISTORY_MESSAGES = 20
