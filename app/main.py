@@ -16,7 +16,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
-from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse, Response
+from fastapi.responses import (
+    HTMLResponse,
+    JSONResponse,
+    PlainTextResponse,
+    RedirectResponse,
+    Response,
+)
 from fastapi.staticfiles import StaticFiles
 from twilio.twiml.messaging_response import MessagingResponse
 
@@ -139,6 +145,12 @@ async def console_auth_middleware(request: Request, call_next):
 @app.get("/health")
 def health() -> dict:
     return {"status": "ok", "service": "healthbot-ng"}
+
+
+@app.get("/")
+def root() -> RedirectResponse:
+    """Point humans at the console instead of a bare JSON 404."""
+    return RedirectResponse(url="/dashboard/")
 
 
 @app.post("/api/auth/login")
