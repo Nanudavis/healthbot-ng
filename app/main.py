@@ -20,7 +20,6 @@ from fastapi.responses import (
     HTMLResponse,
     JSONResponse,
     PlainTextResponse,
-    RedirectResponse,
     Response,
 )
 from fastapi.staticfiles import StaticFiles
@@ -147,10 +146,13 @@ def health() -> dict:
     return {"status": "ok", "service": "healthbot-ng"}
 
 
-@app.get("/")
-def root() -> RedirectResponse:
-    """Point humans at the console instead of a bare JSON 404."""
-    return RedirectResponse(url="/dashboard/")
+_INDEX_TEMPLATE = Path(__file__).resolve().parent / "templates" / "index.html"
+
+
+@app.get("/", response_class=HTMLResponse)
+def root() -> HTMLResponse:
+    """Table of contents: every surface of the system, one link away."""
+    return HTMLResponse(_INDEX_TEMPLATE.read_text(encoding="utf-8"))
 
 
 @app.post("/api/auth/login")
