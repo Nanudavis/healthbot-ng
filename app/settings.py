@@ -28,6 +28,10 @@ EDITABLE = {
     "OPENAI_BASE_URL": {"secret": False, "label": "Base URL"},
     "OPENAI_MODEL": {"secret": False, "label": "Model"},
     "EMBEDDING_PROVIDER": {"secret": False, "label": "Embeddings"},
+    # Cloud deployment: embeddings served by Hugging Face's Inference API
+    # (EMBEDDING_PROVIDER=hf) so no torch runs on the host.
+    "HF_API_TOKEN": {"secret": True, "label": "HF API token"},
+    "HF_EMBEDDING_MODEL": {"secret": False, "label": "HF embedding model"},
 }
 
 # Presets mirroring scripts/use_provider.py, so the console offers the
@@ -61,6 +65,20 @@ PRESETS = {
             "DeepSeek serves chat models only — embeddings switch to the on-device "
             "model automatically. Key from platform.deepseek.com. V4 Flash is the "
             "fast, cheap default; V4 Pro trades cost for capability."
+        ),
+        "models": ["deepseek-v4-flash", "deepseek-v4-pro"],
+    },
+    "deepseek-hf": {
+        "label": "DeepSeek (cloud · HF embeddings)",
+        "OPENAI_BASE_URL": "https://api.deepseek.com/v1",
+        "OPENAI_MODEL": "deepseek-v4-flash",
+        "EMBEDDING_PROVIDER": "hf",
+        "key_hint": "sk-…",
+        "note": (
+            "The deployed (Railway) configuration: DeepSeek for chat and "
+            "Hugging Face's hosted inference for embeddings, so no torch runs "
+            "on the host. Needs a free HF token with the 'Make calls to "
+            "Inference Providers' permission."
         ),
         "models": ["deepseek-v4-flash", "deepseek-v4-pro"],
     },
@@ -177,7 +195,13 @@ def update(changes: dict, token: str) -> dict:
         # next retrieval re-initialises with the new provider/key. If the
         # index itself was built with a different embedding model, the
         # knowledge page now warns and asks for a rebuild.
-        if set(applied) & {"OPENAI_API_KEY", "OPENAI_BASE_URL", "EMBEDDING_PROVIDER"}:
+        if set(applied) & {
+            "OPENAI_API_KEY",
+            "OPENAI_BASE_URL",
+            "EMBEDDING_PROVIDER",
+            "HF_API_TOKEN",
+            "HF_EMBEDDING_MODEL",
+        }:
             rag.reset_store()
         log.info("Settings updated: %s", ", ".join(applied))
     return {"applied": applied, **current()}
@@ -229,14 +253,20 @@ def test_connection() -> dict:
             "note": "on-device embeddings — no API call needed",
         }
     else:
+        provider = "hf" if config.EMBEDDING_PROVIDER == "hf" else "openai"
+        model = (
+            config.HF_EMBEDDING_MODEL
+            if provider == "hf"
+            else config.EMBEDDING_MODEL
+        )
         try:
             rag._embeddings().embed_query("child fever danger signs")
-            embeddings = {"ok": True, "provider": "openai", "model": config.EMBEDDING_MODEL}
+            embeddings = {"ok": True, "provider": provider, "model": model}
         except Exception as exc:
             embeddings = {
                 "ok": False,
-                "provider": "openai",
-                "model": config.EMBEDDING_MODEL,
+                "provider": provider,
+                "model": model,
                 "error": f"{type(exc).__name__}: {exc}"[:200],
             }
 
