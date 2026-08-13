@@ -95,6 +95,8 @@ def index_status() -> dict:
     current_model = (
         config.LOCAL_EMBEDDING_MODEL
         if config.EMBEDDING_PROVIDER == "local"
+        else config.HF_EMBEDDING_MODEL
+        if config.EMBEDDING_PROVIDER == "hf"
         else config.EMBEDDING_MODEL
     )
     return {
