@@ -11,7 +11,6 @@ contribute (5 - answer); the sum is multiplied by 2.5 to give 0-100.
 """
 
 import statistics
-from datetime import datetime, timezone
 
 from sqlalchemy import select
 

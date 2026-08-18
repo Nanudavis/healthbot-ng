@@ -9,7 +9,6 @@ The synchronous TwiML path remains the default and is unchanged.
 
 import logging
 import threading
-import time
 from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import select

@@ -12,7 +12,6 @@ the new one is ready rather than going dark mid-rebuild.
 
 import logging
 import re
-import shutil
 import threading
 from datetime import datetime, timezone
 from pathlib import Path

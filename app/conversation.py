@@ -13,7 +13,7 @@ import time
 from openai import OpenAI
 
 from app import config, facilities, language, observability, rag, records, safety_net, triage
-from app.sessions import SessionStore, make_session_store
+from app.sessions import make_session_store
 
 log = logging.getLogger(__name__)
 

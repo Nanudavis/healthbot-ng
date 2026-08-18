@@ -1,52 +1,49 @@
 # Deploying HealthBot NG on Railway
 
-This deployment keeps HealthBot NG online continuously: Railway runs the
-FastAPI service and its PostgreSQL service stores records and session state.
+This deployment keeps HealthBot NG online continuously. Railway runs the
+FastAPI service (built from the included `Dockerfile`) with SQLite on a
+persistent volume (`/data`); no PostgreSQL is required at this scale.
 
-## Required Railway services
+## Deploy from GitHub
 
-1. Create a new Railway project from this folder or its GitHub repository.
-2. Add a **PostgreSQL** service.
-3. Add this application as a service. Railway uses the included `Dockerfile`.
-4. Generate a public domain for the application service.
+1. Push this repository (private, branch `main`) to GitHub.
+2. In Railway: **New Project → Deploy from GitHub repo** → select the repo.
+   The included `railway.json` selects the Dockerfile builder and sets the
+   `/health` healthcheck.
+3. Generate a public domain for the service.
 
-## Required application variables
+## Required variables
 
-Set these in the application service, never in the repository:
+Set these in the Railway service dashboard (never commit them):
 
 ```text
-DATABASE_URL=${{Postgres.DATABASE_URL}}
-SESSION_STORE=db
+ADMIN_TOKEN=<rotated demo token, kept out of the thesis>
 CONSOLE_AUTH_REQUIRED=true
-ADMIN_TOKEN=<a long, unique secret>
-PUBLIC_BASE_URL=https://<your-railway-domain>
-OPENAI_API_KEY=<provider key>
-OPENAI_MODEL=<your approved model>
+DATABASE_URL=sqlite:////data/healthbot.db
+EMBEDDING_PROVIDER=hf
+HF_API_TOKEN=<Hugging Face token with Inference Providers permission>
+HF_EMBEDDING_MODEL=BAAI/bge-small-en-v1.5
+OPENAI_API_KEY=<DeepSeek key>
+OPENAI_BASE_URL=https://api.deepseek.com/v1
+OPENAI_MODEL=deepseek-chat
+PUBLIC_BASE_URL=<the generated railway domain>
+SEED_SAMPLE_FACILITIES=true
+SESSION_STORE=memory
+TWILIO_AUTH_TOKEN=<Twilio account auth token — enables signature verification>
 ```
 
-Set the provider-specific variables as applicable (`OPENAI_BASE_URL`,
-`EMBEDDING_*`, and `PINECONE_*`). For an initial demonstration only, set
-`SEED_SAMPLE_FACILITIES=true`; replace the sample data with an approved FMOH
-facility registry before any public health use.
+## Persistent volume
 
-## Channel configuration
+`railway volume add --mount-path /data` — holds `healthbot.db` (records,
+settings, SUS responses) across restarts and redeploys.
 
-After the Railway health check passes, set webhook URLs to:
+## Redeploying
 
-```text
-Twilio WhatsApp:  https://<your-railway-domain>/webhook/whatsapp
-Africa's Talking: https://<your-railway-domain>/webhook/ussd
-```
+Every `git push` to `main` triggers a build + deploy (~2 minutes). The CI
+workflow runs the full test suite on push.
 
-Set `TWILIO_AUTH_TOKEN` before enabling the Twilio webhook signature check.
-Use only one web worker unless a shared session store and a shared RAG index
-have both been configured; this deployment uses the database session store.
+## Scale-up path
 
-## Verification
-
-```bash
-curl https://<your-railway-domain>/health
-```
-
-Expect `{"status":"ok","service":"healthbot-ng"}`. Then open
-`/dashboard`, log in with `ADMIN_TOKEN`, and test both webhook endpoints.
+For multi-worker production: PostgreSQL (`DATABASE_URL`), `SESSION_STORE=db`,
+and a managed vector index — the application supports all three behind
+environment variables.

@@ -8,7 +8,6 @@ Emergencies prefer hospitals over PHCs even when a PHC is closer.
 import csv
 import logging
 from math import asin, cos, radians, sin, sqrt
-from pathlib import Path
 
 from sqlalchemy import delete, select
 

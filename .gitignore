@@ -8,7 +8,6 @@ node_modules/
 dashboard/node_modules/
 
 # local development / thesis artifacts — not needed in the image
-tests/
 scripts/
 docs/
 eval/
