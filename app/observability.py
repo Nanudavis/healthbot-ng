@@ -108,6 +108,7 @@ def log_event(logger: logging.Logger, event: str, **fields) -> None:
 # name. Unknown models produce a NULL cost rather than a guessed one.
 _COST_PER_1M = {
     "deepseek-v4-flash": (0.14, 0.28),
+    "deepseek-chat": (0.14, 0.28),  # DeepSeek alias resolving to V4 Flash
     "deepseek-v4-pro": (0.435, 0.87),
     "gpt-4o": (2.50, 10.00),
     "gpt-4o-mini": (0.15, 0.60),
