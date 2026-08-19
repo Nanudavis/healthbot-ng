@@ -57,6 +57,17 @@ RED_FLAGS = (
     "hit head", "head injury", "vomiting repeatedly", "keeps vomiting",
     "vomiting a lot", "repeated vomiting", "vomiting nonstop",
     "throwing up a lot",
+    # Stroke: movement/speech failure (English)
+    "can't move", "cannot move", "can't move arm", "cannot move arm",
+    "can't move leg", "cannot move leg", "can't move one side",
+    "cannot move one side", "speech not clear", "speech unclear",
+    "not speaking clearly", "speech is not clear",
+    # Poisoning / chemical ingestion (English + Pidgin)
+    "swallowed poison", "drank poison", "swallow kerosene", "swallow fuel",
+    "swallow chemical", "swallow bleach", "swallow detergent",
+    "drink kerosene", "drink fuel", "drink bleach", "drink chemical",
+    "swallow medicine bottle", "swallow medicine", "swallow pill",
+    "swallow tablet", "drink medicine", "drink detergent",
     # Pidgin
     "no dey breathe", "no fit breathe", "dey shake body", "shake body",
     "no dey wake", "no fit wake", "don faint",
@@ -77,6 +88,9 @@ RED_FLAGS = (
     "irora aya",
     "oju ro", "apa kan ko lagbara", "ko le soro", "oju wu", "eti wu",
     "ofun wu", "ko mu omi", "ko jeun", "ejo bu", "ejò", "ara po",
+    # Yoruba: infant feeding refusal + bleeding (incl. pregnancy)
+    "ko lati mu omu", "ko mu omu", "ko gba omu", "ko mu oyan",
+    "eje n jade", "eje n jade lara", "eje n bo", "eje n san",
     # Igbo
     "ọgbọ", "ogbo aki", "adaa mba", "naghị eku ume", "naghi eku ume",
     "ekuchaghị ume", "enweghị ike iku ume", "ọbara na-agba", "obara na-agba",
@@ -84,6 +98,10 @@ RED_FLAGS = (
     "ihu na-adagbu", "aka nwa adịghị ike", "enweghị ike ikwu okwu",
     "ihu na-aza aza", "akpịrị na-afụ", "anaghị enye nwa ara",
     "ahụ na-acha odo odo", "nwa adịghị ike", "agwọ",
+    # Igbo: newborn feeding refusal + very hot
+    "ọ naghị aṅụ ara", "naghị aṅụ ara", "adịghị aṅụ ara",
+    "anaghị aṅụ ara", "ọ na-ekpo ọkụ nke ukwuu", "na-ekpo ọkụ nke ukwuu",
+    "ọbara na-apụ", "obara na-apụ",
 )
 
 # Hausa/Yoruba/Igbo texts are draft translations — have native speakers
