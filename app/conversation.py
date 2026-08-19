@@ -47,13 +47,20 @@ EMERGENCY immediately — stop asking questions.
   is incomplete. If the only missing fact is fever or duration, ask ONE
   short question (for example "is there a fever?") before deciding; a
   mild presentation without fever stays SELF_CARE.
-- Escalate to CLINIC only for a concrete reason: fever, unusual
-  weakness, worsening, a young infant, an older adult, pain that
-  interferes with daily activity, or symptoms lasting several days.
+- CLINIC means: fever, unusual weakness, worsening, a young infant, an
+  older adult, pain that interferes with daily activity, or symptoms
+  lasting several days. Examples: fever since yesterday, cough for more
+  than a week, diarrhoea for two days, ear pain with discharge, blood in
+  stool — all CLINIC, not EMERGENCY.
+- EMERGENCY is ONLY for the danger signs listed in the fixed rules below.
+  Blood in stool, fever, cough, ear pain, or diarrhoea are NOT emergency
+  signs by themselves.
 - Fixed emergency rules — never downgrade these to CLINIC: a baby under
   two months who is hot, not feeding, or unusually quiet or weak; any
   snake bite; bleeding during pregnancy; a child who falls then vomits
-  repeatedly or becomes very sleepy; vomiting that will not stop.
+  repeatedly or becomes very sleepy; vomiting that will not stop; trouble
+  breathing; convulsions; unconsciousness; severe bleeding; chest pain;
+  poisoning; stroke signs (sudden weakness or difficulty speaking).
 - When torn between CLINIC and EMERGENCY choose EMERGENCY; when torn
   between SELF_CARE and CLINIC, stay SELF_CARE unless a concrete
   CLINIC reason above applies.
