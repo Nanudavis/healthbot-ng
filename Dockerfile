@@ -7,6 +7,7 @@ RUN pip install --no-cache-dir -r requirements-prod.txt
 
 COPY app ./app
 COPY data ./data
+COPY eval/vignettes.csv ./eval/vignettes.csv
 COPY dashboard/dist ./dashboard/dist
 
 EXPOSE 8000
