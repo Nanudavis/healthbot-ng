@@ -11,6 +11,7 @@ dashboard/node_modules/
 scripts/
 docs/
 eval/
+!eval/vignettes.csv
 figures/
 *.docx
 *.pdf.tmp

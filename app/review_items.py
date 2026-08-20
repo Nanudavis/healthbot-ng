@@ -5,6 +5,7 @@ the three artefacts can never drift apart.
 """
 import csv
 import re
+from pathlib import Path
 
 from app import language, safety_net, triage
 
@@ -105,8 +106,9 @@ def string_items(language_name: str) -> list[dict]:
 
 
 def vignette_items(language_name: str) -> list[dict]:
+    csv_path = Path(__file__).resolve().parent.parent / "eval" / "vignettes.csv"
     rows = []
-    with open("eval/vignettes.csv", newline="", encoding="utf-8") as f:
+    with open(csv_path, newline="", encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
     items = []
     for r in rows:
