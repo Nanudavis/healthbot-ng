@@ -29,11 +29,14 @@ from app import (
     auth,
     config,
     conversation,
+    db,
     knowledge,
+    models,
     observability,
     outbound,
     rag,
     records,
+    review_items,
     security,
     settings,
     sus,
@@ -135,6 +138,7 @@ async def console_auth_middleware(request: Request, call_next):
         and path.startswith("/api/")
         and path not in _PUBLIC_API
         and not (path == "/api/sus" and request.method == "POST")
+        and not (path == "/api/native-review" and request.method == "POST")
     ):
         if not auth.console_authenticated(request):
             return JSONResponse(status_code=401, content={"detail": "Console login required"})
@@ -502,6 +506,113 @@ def export_sus_csv() -> Response:
         content=buffer.getvalue(),
         media_type="text/csv",
         headers={"Content-Disposition": 'attachment; filename="sus_responses.csv"'},
+    )
+
+
+# ── Native-speaker validation of draft translations ─────────────
+
+_NATIVE_TEMPLATE = Path(__file__).resolve().parent / "templates" / "native_review.html"
+_REVIEW_LANGS = {"hausa", "yoruba", "igbo"}
+
+
+@app.get("/native-review", response_class=HTMLResponse)
+def native_review_form(language: str = "") -> HTMLResponse:
+    """Public, phone-first form for the three language validators."""
+    lang = language if language in _REVIEW_LANGS else "hausa"
+    html = (
+        _NATIVE_TEMPLATE.read_text(encoding="utf-8")
+        .replace("__REVIEW_ITEMS__", json.dumps(review_items.items_for(lang)))
+        .replace("__MARKERS__", json.dumps(review_items.markers(lang)))
+        .replace("__LANG__", lang)
+    )
+    return HTMLResponse(html)
+
+
+@app.post("/api/native-review")
+def submit_native_review(
+    language: str = Form(...),
+    reviewer_name: str = Form(...),
+    reviewer_role: str = Form(""),
+    organisation: str = Form(""),
+    assessment: str = Form(""),
+    comments: str = Form(""),
+    items: str = Form(...),
+) -> dict:
+    """Store one reviewer's verdicts (public: reviewers get a link)."""
+    if language not in _REVIEW_LANGS:
+        raise HTTPException(status_code=400, detail="language must be hausa, yoruba or igbo")
+    if not reviewer_name.strip():
+        raise HTTPException(status_code=400, detail="reviewer_name is required")
+    try:
+        parsed = json.loads(items)
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=400, detail="items must be valid JSON")
+    if not isinstance(parsed, list) or not parsed:
+        raise HTTPException(status_code=400, detail="items must be a non-empty list")
+    rows = []
+    for it in parsed:
+        if not isinstance(it, dict):
+            raise HTTPException(status_code=400, detail="each item must be an object")
+        verdict = str(it.get("verdict", ""))
+        if verdict not in ("ok", "correction"):
+            raise HTTPException(status_code=400, detail="verdict must be ok or correction")
+        if verdict == "correction" and not str(it.get("correction", "")).strip():
+            raise HTTPException(
+                status_code=400, detail="correction text is required when verdict is correction"
+            )
+        rows.append(models.NativeReview(
+            language=language,
+            reviewer_name=reviewer_name.strip(),
+            reviewer_role=reviewer_role.strip(),
+            organisation=organisation.strip(),
+            assessment=assessment.strip(),
+            comments=comments.strip(),
+            item_id=str(it.get("item_id", ""))[:60],
+            item_type=str(it.get("item_type", "string"))[:16],
+            english=str(it.get("english", ""))[:4000],
+            draft=str(it.get("draft", ""))[:4000],
+            verdict=verdict,
+            correction=str(it.get("correction", "")).strip()[:4000],
+        ))
+    session = db.get_session()
+    try:
+        session.add_all(rows)
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+    return {"status": "saved", "count": len(rows)}
+
+
+@app.get("/api/export/native-review.csv")
+def export_native_reviews() -> Response:
+    """Console-gated CSV of every verdict (middleware enforces auth)."""
+    session = db.get_session()
+    try:
+        rows = session.query(models.NativeReview).order_by(
+            models.NativeReview.created_at, models.NativeReview.id
+        ).all()
+    finally:
+        session.close()
+    buffer = io.StringIO()
+    writer = csv.writer(buffer)
+    writer.writerow([
+        "created_at", "language", "reviewer_name", "reviewer_role", "organisation",
+        "assessment", "comments", "item_id", "item_type", "verdict", "correction",
+        "english", "draft",
+    ])
+    for r in rows:
+        writer.writerow([
+            r.created_at.isoformat(), r.language, r.reviewer_name, r.reviewer_role,
+            r.organisation, r.assessment, r.comments, r.item_id, r.item_type,
+            r.verdict, r.correction, r.english, r.draft,
+        ])
+    return Response(
+        content=buffer.getvalue(),
+        media_type="text/csv",
+        headers={"Content-Disposition": 'attachment; filename="native_reviews.csv"'},
     )
 
 

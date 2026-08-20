@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HealthBot NG — Native Speaker Validation</title>
+<style>
+  :root {
+    --ink:#0B3B37; --teal:#12756B; --teal-soft:#E3F0EE; --paper:#F4F7F6;
+    --line:#DCE6E4; --muted:#5C7370; --ng-green:#008751;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--paper); color: var(--ink); line-height:1.5;
+    padding: 0 0 60px;
+  }
+  header { background: var(--ink); color:#fff; padding:20px 18px; }
+  header b { font-size:17px; display:block; }
+  header small { color:#9FCFC7; font-size:12.5px; }
+  .wrap { max-width:640px; margin:0 auto; padding:0 16px; }
+  .card {
+    background:#fff; border:1px solid var(--line); border-radius:14px;
+    padding:16px; margin-top:16px;
+  }
+  .intro { font-size:13.5px; color:var(--muted); }
+  .intro b { color:var(--ink); }
+  h2 { font-size:16px; margin-bottom:8px; }
+  .langs { display:flex; gap:8px; margin-top:12px; }
+  .langs a {
+    flex:1; text-align:center; font-size:13px; font-weight:600; color:var(--muted);
+    border:1px solid var(--line); border-radius:10px; padding:9px 2px;
+    text-decoration:none; background:#fff;
+  }
+  .langs a.on { background:var(--teal-soft); border-color:var(--teal); color:var(--teal); }
+  label.f { display:block; font-size:12px; font-weight:600; margin:10px 0 5px; }
+  input[type=text], textarea {
+    width:100%; font:inherit; font-size:15px; padding:10px 12px;
+    border:1px solid var(--line); border-radius:10px; background:#fff;
+    color:var(--ink);
+  }
+  textarea { min-height:70px; resize:vertical; }
+  .assess { display:flex; flex-direction:column; gap:8px; margin-top:6px; }
+  .assess label {
+    font-size:13.5px; border:1px solid var(--line); border-radius:10px;
+    padding:10px 12px; cursor:pointer; display:flex; gap:8px; align-items:center;
+    background:#fff;
+  }
+  .assess label:has(input:checked) {
+    background:var(--teal-soft); border-color:var(--teal); color:var(--teal);
+  }
+  .item { padding:14px 0; border-bottom:1px dashed var(--line); }
+  .item:last-child { border-bottom:none; }
+  .item .lbl {
+    display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; color:var(--teal); background:var(--teal-soft);
+    border-radius:6px; padding:2px 8px; margin-bottom:6px;
+  }
+  .item .en { font-size:12.5px; color:var(--muted); margin-bottom:6px; }
+  .item .draft {
+    font-size:15.5px; background:#FAFCFB; border:1px solid var(--line);
+    border-left:4px solid var(--ng-green); border-radius:8px;
+    padding:10px 12px; white-space:pre-wrap; margin-bottom:10px;
+  }
+  .verdicts { display:flex; gap:8px; }
+  .verdicts button {
+    flex:1; font:inherit; font-size:13.5px; font-weight:600; color:var(--muted);
+    background:#fff; border:1px solid var(--line); border-radius:10px;
+    padding:10px 4px; cursor:pointer;
+  }
+  .verdicts button.on-ok { background:#E8F3E9; border-color:#2E7D32; color:#2E7D32; }
+  .verdicts button.on-fix { background:#FDF3E7; border-color:#B26A00; color:#B26A00; }
+  .corr { display:none; margin-top:10px; }
+  .corr.show { display:block; }
+  .markers { font-size:13px; color:var(--ink); background:#FAFCFB;
+             border:1px solid var(--line); border-radius:8px; padding:10px 12px;
+             margin-top:6px; }
+  .markers b { color:var(--teal); }
+  button.submit {
+    width:100%; font:inherit; font-size:16px; font-weight:600; color:#fff;
+    background:var(--teal); border:none; border-radius:12px; padding:14px;
+    margin-top:16px; cursor:pointer;
+  }
+  button.submit:disabled { opacity:.6; cursor:default; }
+  .msg { margin-top:14px; font-size:14px; padding:12px; border-radius:10px; display:none; }
+  .msg.ok { background:#E8F3E9; color:#2E7D32; display:block; }
+  .msg.err { background:#FBE9E9; color:#B91C1C; display:block; }
+  .done { text-align:center; padding:40px 16px; }
+  .done .big { font-size:40px; }
+  .sticky { position:sticky; bottom:0; background:var(--paper);
+            padding:10px 0 14px; }
+  .progress { font-size:12px; color:var(--muted); margin-top:10px; text-align:center; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <b>HealthBot NG</b>
+    <small>Native-speaker validation · <span id="langname"></span></small>
+  </div>
+</header>
+
+<div class="wrap">
+  <div id="form-area">
+    <div class="card">
+      <p class="intro">
+        <b>Thank you for reviewing our translations.</b> HealthBot NG is a
+        multilingual health-triage system for Nigeria. Read each draft
+        translation and compare it with the English meaning. Tap
+        <b>✓ OK</b> if it is accurate, natural and respectful; tap
+        <b>✎ Correction</b> and type the corrected version if anything is
+        wrong, awkward, too formal, or medically unclear. The
+        <b>emergency override</b> and <b>return signs</b> are safety-critical —
+        flag anything that could be misunderstood. Your name and role will be
+        recorded in the project report as the validation record.
+      </p>
+      <div class="langs">
+        <a href="/native-review?language=hausa" class="on">Hausa</a>
+        <a href="/native-review?language=yoruba" class="on">Yoruba</a>
+        <a href="/native-review?language=igbo" class="on">Igbo</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>About you</h2>
+      <label class="f">Your full name *</label>
+      <input type="text" id="name" placeholder="e.g. Malam Ibrahim Musa">
+      <label class="f">Role / qualification</label>
+      <input type="text" id="role" placeholder="e.g. Hausa teacher, nurse, linguist">
+      <label class="f">Organisation (optional)</label>
+      <input type="text" id="org" placeholder="">
+      <label class="f">Overall assessment</label>
+      <div class="assess">
+        <label><input type="radio" name="assessment" value="accurate" checked> All strings accurate</label>
+        <label><input type="radio" name="assessment" value="minor"> Minor corrections needed</label>
+        <label><input type="radio" name="assessment" value="major"> Major issues</label>
+      </div>
+      <label class="f">General comments (optional)</label>
+      <textarea id="comments" placeholder="Anything about tone, dialect choice, medical clarity…"></textarea>
+    </div>
+
+    <div class="card">
+      <h2>Part 1 — User-facing strings</h2>
+      <p class="intro">Every message a user can receive in this language.</p>
+      <div id="strings"></div>
+    </div>
+
+    <div class="card">
+      <h2>Part 2 — Translated vignettes</h2>
+      <p class="intro">Patient turns from the clinical evaluation, translated.
+      Check that the translation preserves the clinical meaning of the symptoms.</p>
+      <div id="vignettes"></div>
+    </div>
+
+    <div class="card">
+      <h2>Part 3 — Language-detection word lists</h2>
+      <p class="intro">Used only to detect which language a user is writing in.
+      Flag any word that is misspelled or that a native speaker would not use.</p>
+      <div class="markers" id="markers"></div>
+      <label class="f">Corrections for the word lists (optional)</label>
+      <textarea id="marker-corrections" placeholder="e.g. replace 'xyz' with 'abc'…"></textarea>
+    </div>
+
+    <div class="sticky">
+      <button class="submit" id="submit">Submit review</button>
+      <div class="progress" id="progress"></div>
+    </div>
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <div class="done" id="done-area" style="display:none">
+    <div class="big">🙏</div>
+    <h2>Na gode · E se · Daalụ — thank you!</h2>
+    <p class="intro" style="margin-top:8px">Your review has been recorded.
+    You can close this page.</p>
+  </div>
+</div>
+
+<script>
+const ITEMS = __REVIEW_ITEMS__;
+const MARKERS = __MARKERS__;
+const LANG = "__LANG__";
+const LANGNAMES = {hausa:"Hausa", yoruba:"Yoruba", igbo:"Igbo"};
+document.getElementById("langname").textContent = LANGNAMES[LANG];
+document.querySelectorAll(".langs a").forEach(a => {
+  a.classList.toggle("on", a.textContent.trim() === LANGNAMES[LANG]);
+});
+document.getElementById("markers").innerHTML =
+  "<b>Words:</b> " + MARKERS.words.join(", ") +
+  "<br><br><b>Phrases:</b> " + MARKERS.phrases.join(", ");
+
+const state = {};  // itemKey -> {verdict, correction}
+
+function makeItem(item) {
+  const wrap = document.createElement("div");
+  wrap.className = "item";
+  const lbl = document.createElement("span");
+  lbl.className = "lbl";
+  lbl.textContent = item.label;
+  const en = document.createElement("div");
+  en.className = "en";
+  en.textContent = item.english || "";
+  const draft = document.createElement("div");
+  draft.className = "draft";
+  draft.textContent = item.draft;
+  const vd = document.createElement("div");
+  vd.className = "verdicts";
+  const okBtn = document.createElement("button");
+  okBtn.textContent = "✓ OK";
+  const fixBtn = document.createElement("button");
+  fixBtn.textContent = "✎ Correction";
+  const corr = document.createElement("div");
+  corr.className = "corr";
+  const ta = document.createElement("textarea");
+  ta.placeholder = "Type the corrected translation here…";
+  corr.appendChild(ta);
+  function sync() {
+    okBtn.classList.toggle("on-ok", state[item.key] && state[item.key].verdict === "ok");
+    fixBtn.classList.toggle("on-fix", state[item.key] && state[item.key].verdict === "correction");
+    corr.classList.toggle("show", state[item.key] && state[item.key].verdict === "correction");
+    if (corr.classList.contains("show")) ta.focus();
+    updateProgress();
+  }
+  okBtn.onclick = () => { state[item.key] = {verdict:"ok", correction:""}; ta.value = ""; sync(); };
+  fixBtn.onclick = () => {
+    state[item.key] = {verdict:"correction", correction: ta.value};
+    sync();
+  };
+  ta.oninput = () => { if (state[item.key]) state[item.key].correction = ta.value; };
+  wrap.append(lbl, en, draft, vd, corr);
+  vd.append(okBtn, fixBtn);
+  return wrap;
+}
+
+const stringsBox = document.getElementById("strings");
+const vigBox = document.getElementById("vignettes");
+let total = 0;
+ITEMS.forEach(item => {
+  const el = makeItem(item);
+  total += 1;
+  if (item.key.startsWith("redflag_") || item.key.startsWith("return_") ||
+      item.key === "emergency_override") {
+    stringsBox.appendChild(el);
+  } else {
+    vigBox.appendChild(el);
+  }
+});
+
+function updateProgress() {
+  const done = Object.values(state).filter(v => v && v.verdict).length;
+  document.getElementById("progress").textContent = done + " of " + total + " reviewed";
+}
+
+document.getElementById("submit").onclick = async () => {
+  const msg = document.getElementById("msg");
+  msg.className = "msg";
+  msg.textContent = "";
+  const name = document.getElementById("name").value.trim();
+  if (!name) { msg.className = "msg err"; msg.textContent = "Please enter your full name."; window.scrollTo(0,0); return; }
+  if (Object.values(state).filter(v => v && v.verdict).length < total) {
+    msg.className = "msg err";
+    msg.textContent = "Please review every item before submitting (" + total + " items in total).";
+    window.scrollTo(0, document.body.scrollHeight);
+    return;
+  }
+  const payload = ITEMS.map(item => ({
+    item_id: item.key,
+    item_type: item.key.startsWith("redflag_") || item.key.startsWith("return_") ||
+               item.key === "emergency_override" ? "string" : "vignette",
+    english: item.english,
+    draft: item.draft,
+    verdict: state[item.key].verdict,
+    correction: state[item.key].correction || "",
+  }));
+  const markerFix = document.getElementById("marker-corrections").value.trim();
+  if (markerFix) {
+    payload.push({
+      item_id: "word_markers", item_type: "string",
+      english: "language-detection word lists",
+      draft: (MARKERS.words.concat(MARKERS.phrases)).join(", "),
+      verdict: "correction", correction: markerFix,
+    });
+  }
+  const assessment = (document.querySelector('input[name=assessment]:checked') || {}).value || "";
+  const btn = document.getElementById("submit");
+  btn.disabled = true;
+  btn.textContent = "Submitting…";
+  try {
+    const res = await fetch("/api/native-review", {
+      method: "POST",
+      headers: {"Content-Type": "application/x-www-form-urlencoded"},
+      body: new URLSearchParams({
+        language: LANG,
+        reviewer_name: name,
+        reviewer_role: document.getElementById("role").value,
+        organisation: document.getElementById("org").value,
+        assessment: assessment,
+        comments: document.getElementById("comments").value,
+        items: JSON.stringify(payload),
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      msg.className = "msg err";
+      msg.textContent = data.detail || "Something went wrong — please try again.";
+      btn.disabled = false; btn.textContent = "Submit review";
+      return;
+    }
+    document.getElementById("form-area").style.display = "none";
+    document.getElementById("done-area").style.display = "block";
+    window.scrollTo(0, 0);
+  } catch (e) {
+    msg.className = "msg err";
+    msg.textContent = "Network error — please check your connection and try again.";
+    btn.disabled = false; btn.textContent = "Submit review";
+  }
+};
+</script>
+</body>
+</html>

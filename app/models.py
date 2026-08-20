@@ -99,6 +99,34 @@ class VignetteValidation(Base):
     )
 
 
+class NativeReview(Base):
+    """One native speaker's verdict on one review item.
+
+    One row per item so the collected corrections can be parsed and applied
+    per string. Reviewer identity is recorded deliberately — the thesis
+    names the validators (§4.13.2) — so reviewers consent by submitting.
+    """
+
+    __tablename__ = "native_reviews"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    language: Mapped[str] = mapped_column(String(16), index=True)  # hausa | yoruba | igbo
+    reviewer_name: Mapped[str] = mapped_column(String(120), index=True)
+    reviewer_role: Mapped[str] = mapped_column(String(120), default="")
+    organisation: Mapped[str] = mapped_column(String(120), default="")
+    assessment: Mapped[str] = mapped_column(String(60), default="")  # accurate | minor | major
+    comments: Mapped[str] = mapped_column(Text, default="")
+    item_id: Mapped[str] = mapped_column(String(60), index=True)
+    item_type: Mapped[str] = mapped_column(String(16), default="string")  # string | vignette
+    english: Mapped[str] = mapped_column(Text, default="")
+    draft: Mapped[str] = mapped_column(Text, default="")
+    verdict: Mapped[str] = mapped_column(String(16), index=True)  # ok | correction
+    correction: Mapped[str] = mapped_column(Text, default="")
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, default=lambda: datetime.now(timezone.utc), index=True
+    )
+
+
 class ConversationTurn(Base):
     """One exchange, kept for clinical audit — only when
     STORE_TRANSCRIPTS is enabled.
