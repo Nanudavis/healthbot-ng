@@ -28,7 +28,7 @@ GLOSS = {
         "irora aya": "chest pain", "oju ro": "face drooping (stroke sign)",
         "apa kan ko lagbara": "one side weak", "ko le soro": "cannot speak",
         "oju wu": "face swollen", "eti wu": "ear swollen", "ofun wu": "throat swollen",
-        "ko mu omi": "not drinking water", "ko jeun": "not eating", "ejo bu": "snake bite",
+        "mio mu omi": "not drinking water", "ko jeun": "not eating", "ejo bu": "snake bite",
         "ejò": "snake", "ara po": "body swollen", "ko lati mu omu": "refuses to breastfeed",
         "ko mu omu": "does not breastfeed", "ko gba omu": "not taking the breast",
         "ko mu oyan": "not sucking", "eje n jade": "blood coming out",
@@ -38,7 +38,7 @@ GLOSS = {
     "igbo": {
         "ọgbọ": "fits / convulsion", "ogbo aki": "fits / convulsion", "adaa mba": "fainted / collapsed",
         "naghị eku ume": "not breathing", "naghi eku ume": "not breathing",
-        "ekuchaghị ume": "not breathing well", "enweghị ike iku ume": "cannot breathe",
+        "naghi eku ume ofuma": "not breathing well", "enweghị ike iku ume": "cannot breathe",
         "ọbara na-agba": "bleeding", "obara na-agba": "bleeding", "mgbu obi": "chest pain",
         "ọ nwụọla": "he has died / unconscious", "adịghị eteta": "not waking up",
         "adighi eteta": "not waking up", "ihu na-adagbu": "face drooping (stroke sign)",

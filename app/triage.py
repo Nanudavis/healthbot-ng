@@ -87,13 +87,13 @@ RED_FLAGS = (
     "gìrì", " giri", "daku", "dákú", "ko le mi", "kò mí", "eje pupo",
     "irora aya",
     "oju ro", "apa kan ko lagbara", "ko le soro", "oju wu", "eti wu",
-    "ofun wu", "ko mu omi", "ko jeun", "ejo bu", "ejò", "ara po",
+    "ofun wu", "mio mu omi", "ko jeun", "ejo bu", "ejò", "ara po",
     # Yoruba: infant feeding refusal + bleeding (incl. pregnancy)
     "ko lati mu omu", "ko mu omu", "ko gba omu", "ko mu oyan",
     "eje n jade", "eje n jade lara", "eje n bo", "eje n san",
     # Igbo
     "ọgbọ", "ogbo aki", "adaa mba", "naghị eku ume", "naghi eku ume",
-    "ekuchaghị ume", "enweghị ike iku ume", "ọbara na-agba", "obara na-agba",
+    "naghi eku ume ofuma", "enweghị ike iku ume", "ọbara na-agba", "obara na-agba",
     "mgbu obi", "ọ nwụọla", "adịghị eteta", "adighi eteta",
     "ihu na-adagbu", "aka nwa adịghị ike", "enweghị ike ikwu okwu",
     "ihu na-aza aza", "akpịrị na-afụ", "anaghị enye nwa ara",
@@ -104,8 +104,11 @@ RED_FLAGS = (
     "ọbara na-apụ", "obara na-apụ",
 )
 
-# Hausa/Yoruba/Igbo texts are draft translations — have native speakers
-# verify them before deployment/evaluation (note for SUS participants).
+# Hausa/Yoruba/Igbo texts verified by native speakers (Aug 2026):
+# Malam Hamza Dangote (Hausa, linguist) — all strings approved;
+# Ayodele (Yoruba) — "ko mu omi" → "mio mu omi" (first-person form);
+# Veronica Emelumonye (Igbo, public health officer) — "ekuchaghị ume" →
+# "naghi eku ume ofuma"; "IHE MBERE" → "IHE MBEREDE".
 EMERGENCY_OVERRIDE_REPLIES = {
     "english": (
         "🚨 EMERGENCY — GO NOW\n\n"
@@ -132,7 +135,7 @@ EMERGENCY_OVERRIDE_REPLIES = {
         "ti yoo gbe yin lo."
     ),
     "igbo": (
-        "🚨 IHE MBERE — GAA ỤLỌ ỌGWỤ UGBU A\n\n"
+        "🚨 IHE MBEREDE — GAA ỤLỌ ỌGWỤ UGBU A\n\n"
         "Ihe ị kwuru nwere ike ịbụ ihe mberede dị njọ. Echela — buru onye "
         "ahụ gaa ỤLỌ ỌGWỤ ma ọ bụ ebe ahụike kacha nso UGBU A, ma ọ bụ "
         "chọta onye ga-eburu unu gaa."
@@ -184,7 +187,7 @@ RED_FLAG_SIGNS = (
       "ihu na-aza aza", "akpịrị na-afụ"), "severe allergic reaction (swelling)"),
     (("can't swallow", "cannot swallow", "difficulty swallowing"), "severe allergic reaction (swallowing)"),
     (("not feeding", "refusing to feed", "won't feed", "no dey suck", "no dey feed",
-      "bai sha nono ba", "ba ya shan nono", "ba ya sha nono", "ko mu omi",
+      "bai sha nono ba", "ba ya shan nono", "ba ya sha nono", "Mio mu omi",
       "ko jeun", "anaghị enye nwa ara", "will not breastfeed",
       "won't breastfeed", "not breastfeed", "refusing to breastfeed"),
      "newborn not feeding"),
@@ -201,7 +204,7 @@ RED_FLAG_SIGNS = (
      "repeated vomiting / possible head injury"),
     (("zafi sosai",), "high fever (very hot)"),
     (("ọgbọ", "adaa mba", "ogbo aki"), "convulsion"),
-    (("eku ume", "iku ume", "ekuchaghị ume"), "difficulty breathing"),
+    (("eku ume", "iku ume", "naghi eku ume ofuma"), "difficulty breathing"),
     (("mgbu obi",), "chest pain"),
     (("ọbara na-agba", "obara na-agba"), "severe bleeding"),
     (("adịghị eteta", "adighi eteta", "nwụọla"), "unconscious / not waking"),

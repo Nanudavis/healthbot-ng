@@ -161,7 +161,7 @@ SCREENS = {
         ),
         "duration": "Kemgbe ole? \n1. Malitere taa\n2. Ụbọchị 1-3\n3. Karịa ụbọchị 3",
         "emergency": (
-            "IHE MBERE: Gaa ỤLỌ ỌGWỤ kacha nso UGBU A. Echela."
+            "IHE MBEREDE: Gaa ỤLỌ ỌGWỤ kacha nso UGBU A. Echela."
         ),
         "clinic": (
             "GAA ỤLỌ ỌGWỤ: Hụ onye ahụike TAA."
