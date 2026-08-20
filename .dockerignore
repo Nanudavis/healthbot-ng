@@ -9,6 +9,7 @@ tests
 scripts
 docs
 eval
+!eval/vignettes.csv
 figures
 *.docx
 *.md
