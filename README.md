@@ -110,6 +110,15 @@ features available. LLM conversation and protocol retrieval require the
 corresponding provider settings in `.env`. Set a strong `ADMIN_TOKEN` before
 using the console.
 
+The default installation uses hosted embeddings and avoids the large
+PyTorch-based local-model stack. To run sentence-transformer embeddings fully
+offline, install `requirements-local-embeddings.txt` instead and set
+`EMBEDDING_PROVIDER=local`:
+
+```bash
+python -m pip install -r requirements-local-embeddings.txt
+```
+
 Build the dashboard:
 
 ```bash

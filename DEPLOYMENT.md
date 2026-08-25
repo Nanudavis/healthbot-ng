@@ -43,6 +43,9 @@ TWILIO_AUTH_TOKEN=<Twilio authentication token>
 
 Provider catalogues change. Confirm the selected model identifier with the
 provider before deployment instead of relying on an old alias from this guide.
+The optional `EMBEDDING_PROVIDER=local` path requires installation from
+`requirements-local-embeddings.txt` and substantially increases the container
+image because it includes the PyTorch sentence-transformer stack.
 
 ## Persistent volume
 

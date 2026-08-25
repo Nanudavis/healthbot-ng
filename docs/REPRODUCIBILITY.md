@@ -23,6 +23,11 @@ npm run build
 cd ..
 ```
 
+The core requirements are sufficient for the automated checks and hosted
+embedding providers. For the optional offline sentence-transformer path, use
+`python -m pip install -r requirements-local-embeddings.txt`; that file also
+installs the core requirements.
+
 The final local audit produced 532 passing Python tests and a successful Vite
 production build. GitHub Actions reruns both checks from a clean environment.
 

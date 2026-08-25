@@ -16,6 +16,3 @@ SQLAlchemy==2.0.51
 psycopg[binary]==3.2.10
 pytest==8.3.5
 httpx==0.28.1
-# Optional: EMBEDDING_PROVIDER=local (offline, no API key)
-langchain-huggingface==1.2.2
-sentence-transformers==5.6.1

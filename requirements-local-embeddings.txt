@@ -1,0 +1,7 @@
+# Optional offline embedding stack for EMBEDDING_PROVIDER=local.
+# Install this file instead of requirements.txt when local sentence-transformer
+# embeddings are required. Hosted deployments and the automated test suite do
+# not need the PyTorch-backed packages below.
+-r requirements.txt
+langchain-huggingface==1.2.2
+sentence-transformers==5.6.1
