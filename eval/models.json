@@ -1,0 +1,26 @@
+[
+  {
+    "name": "GPT-4o",
+    "model": "gpt-4o",
+    "base_url": "",
+    "api_key_env": "OPENAI_API_KEY"
+  },
+  {
+    "name": "Claude Opus 4.8 (AgentRouter)",
+    "model": "claude-opus-4-8",
+    "base_url": "https://agentrouter.org/v1",
+    "api_key_env": "AGENTROUTER_API_KEY"
+  },
+  {
+    "name": "DeepSeek V4 Flash",
+    "model": "deepseek-v4-flash",
+    "base_url": "https://api.deepseek.com/v1",
+    "api_key_env": "DEEPSEEK_API_KEY"
+  },
+  {
+    "name": "DeepSeek V4 Pro",
+    "model": "deepseek-v4-pro",
+    "base_url": "https://api.deepseek.com/v1",
+    "api_key_env": "DEEPSEEK_API_KEY"
+  }
+]

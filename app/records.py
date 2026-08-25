@@ -1,4 +1,4 @@
-"""Triage record persistence + surveillance stats (Sprint 8).
+"""Triage record persistence + research analytics (Sprint 8).
 
 Writing a record must never break a patient reply — every write is
 fail-safe. Reads power the FMOH dashboard endpoints.
@@ -22,7 +22,7 @@ from app.models import (
 
 log = logging.getLogger(__name__)
 
-# Symptom grouping for surveillance. Applied to the system-generated
+# Symptom grouping for research analytics. Applied to the system-generated
 # English `reason`, never to the patient's own words — those are not
 # stored. Order matters: the first category that matches wins, so the
 # more urgent/specific patterns are listed first.
@@ -47,7 +47,7 @@ def window_start(days: int | None) -> datetime | None:
     """Start of the reporting window, or None for all time.
 
     Aggregates default to all time, which is fine at a few hundred
-    records and useless at fifty thousand — so every surveillance view
+    records and useless at fifty thousand — so every research-analytics view
     takes the same window and the dashboard passes one value to all.
 
     Rolling, not calendar-aligned: "last 24 hours" must mean the last
@@ -542,7 +542,7 @@ def facility_routing(days: int | None = None) -> list[dict]:
 
 
 def export_rows() -> list[dict]:
-    """Anonymised triage records for CSV export / offline analysis."""
+    """Pseudonymised triage records for CSV export / offline analysis."""
     with db.get_session() as session:
         rows = session.scalars(
             select(TriageRecord).order_by(TriageRecord.created_at.desc())

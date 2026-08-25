@@ -92,7 +92,7 @@ PROTOCOLS_DIR = os.getenv("PROTOCOLS_DIR", "data/protocols")
 LOCAL_INDEX_PATH = os.getenv("LOCAL_INDEX_PATH", "data/index/protocols.local.json")
 RAG_TOP_K = 4
 
-# IDSR-style alert thresholds for the surveillance console. A series
+# IDSR-style alert thresholds for the research analytics console. A series
 # "alerts" when the trailing window holds at least ALERT_MIN_COUNT
 # reports AND at least ALERT_MULTIPLIER × the previous equal-length
 # window (zero previous reports counts as a new signal once the minimum

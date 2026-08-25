@@ -1,7 +1,7 @@
 """Per-user conversation memory.
 
-Phone numbers are never stored — sessions are keyed by a SHA-256 hash
-(anonymised session ID), per the no-PII rule.
+Phone numbers are never stored directly in this path. Sessions are keyed by a
+stable SHA-256 hash, which is pseudonymous because it remains linkable.
 
 Two backends behind the same interface:
 - `SessionStore` — process-local dict (default; single worker).
@@ -95,7 +95,7 @@ class SessionStore:
 class DbSessionStore:
     """Same interface as SessionStore, backed by the relational database.
 
-    Uses the anonymised session hash as the key and purges rows older
+    Uses the pseudonymised session hash as the key and purges rows older
     than the TTL on every access, so a stale complaint can never be
     triaged as though it were current.
     """

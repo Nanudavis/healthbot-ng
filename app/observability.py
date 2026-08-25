@@ -4,7 +4,7 @@ per-call LLM latency/token/cost events.
 Design goals (from the engineering audit):
 - Every HTTP request gets an X-Request-ID that is carried through logs.
 - App logs are structured JSON lines with request_id and event fields.
-- Every LLM API call records an anonymised AiEvent (model, duration,
+- Every LLM API call records a minimised AiEvent (model, duration,
   tokens, estimated cost, outcome) — no prompt/reply text is ever
   stored, and the write is fail-safe like the rest of the data layer.
 """

@@ -1,0 +1,13 @@
+id,language,expected,messages
+en-emerg-1,english,EMERGENCY,My father suddenly has chest pain and he is sweating and cannot breathe well
+en-clinic-1,english,CLINIC,My daughter has had a fever since yesterday||She is 3 years old||No vomiting and she is drinking water
+en-self-1,english,SELF_CARE,I have a slight headache after working in the sun all day||No fever and I feel okay otherwise. It started this afternoon
+pcm-emerg-1,pidgin,EMERGENCY,my pikin dey shake body since morning
+pcm-clinic-1,pidgin,CLINIC,my pikin dey hot since yesterday night e no gree chop||e never reach 2 years||e vomit once this morning no shaking
+pcm-self-1,pidgin,SELF_CARE,small catarrh dey worry me||no fever just catarrh and small cough wey start today
+ha-emerg-1,hausa,EMERGENCY,yarona ba ya numfashi sosai kuma ya yi suma
+ha-clinic-1,hausa,CLINIC,yarona yana da zazzabi tun jiya||shekarunsa uku||babu amai yana shan ruwa
+ha-self-1,hausa,SELF_CARE,ina jin ciwon kai kadan bayan aiki a rana||babu zazzabi kuma ina shan ruwa
+yo-emerg-1,yoruba,EMERGENCY,omo mi ti daku ko le ji
+yo-clinic-1,yoruba,CLINIC,omo mi ni iba lati ana||odun meta ni||ko bi o n mu omi
+yo-self-1,yoruba,SELF_CARE,efori die l o n se mi lati aaro yi||ko si iba mo n mu omi daadaa

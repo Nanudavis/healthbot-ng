@@ -195,9 +195,10 @@ class RoutingMiss(Base):
 
 
 class ChannelPreference(Base):
-    """Anonymised per-phone preference for deterministic channels.
+    """Pseudonymised per-phone preference for deterministic channels.
 
-    phone_hash is the same one-way SHA-256 used for sessions — no PII.
+    phone_hash is the same one-way SHA-256 used for sessions. It excludes
+    the direct number but remains a stable, linkable identifier.
     A returning USSD user can skip the language screen because the bot
     remembers the language they chose last time. Read/writes are
     fail-safe: a broken preference store must never break a flow.
@@ -223,7 +224,7 @@ class SessionMessage(Base):
     Only used when SESSION_STORE=db. This persists transient user text,
     so it is a documented privacy tradeoff (like enabling transcripts):
     rows are TTL-purged on access and the session key remains the
-    anonymised SHA-256 hash.
+    pseudonymised SHA-256 hash.
     """
 
     __tablename__ = "session_messages"
@@ -305,8 +306,8 @@ class OutboundMessage(Base):
 
 
 class TriageRecord(Base):
-    """One final triage outcome. Anonymised by construction: session_id
-    is a SHA-256 hash, and `reason` is a short clinical sentence the
+    """One final triage outcome. Pseudonymised: session_id is a stable
+    SHA-256 hash, and `reason` is a short clinical sentence the
     system generates (never raw user text)."""
 
     __tablename__ = "triage_records"

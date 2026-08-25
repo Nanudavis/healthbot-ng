@@ -1,3 +1,11 @@
+FROM node:22-slim AS dashboard-build
+
+WORKDIR /dashboard
+COPY dashboard/package.json dashboard/package-lock.json ./
+RUN npm ci
+COPY dashboard/ ./
+RUN npm run build
+
 FROM python:3.12-slim
 
 WORKDIR /app
@@ -8,7 +16,7 @@ RUN pip install --no-cache-dir -r requirements-prod.txt
 COPY app ./app
 COPY data ./data
 COPY eval/vignettes.csv ./eval/vignettes.csv
-COPY dashboard/dist ./dashboard/dist
+COPY --from=dashboard-build /dashboard/dist ./dashboard/dist
 
 EXPOSE 8000
 

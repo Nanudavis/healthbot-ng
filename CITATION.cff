@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this academic prototype, cite the tagged master's-defence release."
+title: "HealthBot NG: A Multilingual AI-Powered Health Triage and Care-Routing System for Primary Healthcare Access in Nigeria"
+type: software
+authors:
+  - family-names: "Osuji"
+    given-names: "Chinanu Davidson"
+version: "1.0.0"
+date-released: "2026-08-25"
+repository-code: "https://github.com/Nanudavis/healthbot-ng"
+url: "https://github.com/Nanudavis/healthbot-ng/releases/tag/v1.0-masters-defence"
+abstract: >-
+  A master's research prototype for multilingual symptom intake,
+  conservative triage, protocol-informed response generation and care-level
+  routing through WhatsApp, USSD and a web research console in Nigeria.
+keywords:
+  - health triage
+  - multilingual AI
+  - Nigeria
+  - retrieval-augmented generation
+  - WhatsApp
+  - USSD

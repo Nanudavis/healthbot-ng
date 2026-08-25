@@ -297,7 +297,7 @@ def _with_return_signs(verdict: str, lang: str, level: TriageLevel, who: str) ->
     return f"{verdict}\n{advice}\n{disclaimer}"
 
 
-# English labels for the anonymised record's reason field — built from
+# English labels for the pseudonymised record's reason field — built from
 # menu codes only, never from anything the user typed.
 WHO_LABELS = {WHO_ME: "adult (self)", WHO_CHILD: "child under 5", WHO_OTHER: "another person"}
 SYMPTOM_LABELS = {

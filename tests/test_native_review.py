@@ -1,4 +1,4 @@
-"""Native-speaker validation form: content, endpoints, storage, export."""
+"""Native-speaker review form: content, endpoints, storage, export."""
 import json
 
 import pytest
@@ -65,13 +65,21 @@ def test_page_accepts_language_query():
 
 
 def _items_payload():
-    return json.dumps([
-        {"item_id": "return_lead", "item_type": "string",
-         "english": "lead-in", "draft": "JE YANZU IDAN:", "verdict": "ok"},
-        {"item_id": "redflag_0", "item_type": "string",
-         "english": "fits", "draft": "farfadiya",
-         "verdict": "correction", "correction": "farfadiya (revised)"},
-    ])
+    payload = []
+    for item in review_items.items_for("hausa"):
+        row = {
+            "item_id": item["key"],
+            # These client-supplied values are deliberately false. The server
+            # must persist the canonical content from app.review_items.
+            "item_type": "tampered",
+            "english": "tampered",
+            "draft": "tampered",
+            "verdict": "ok",
+        }
+        if item["key"] == "redflag_0":
+            row.update(verdict="correction", correction="farfadiya (revised)")
+        payload.append(row)
+    return json.dumps(payload)
 
 
 def test_submit_stores_rows(review_db):
@@ -84,20 +92,24 @@ def test_submit_stores_rows(review_db):
             "organisation": "",
             "assessment": "minor",
             "comments": "mostly good",
+            "consent": "yes",
             "items": _items_payload(),
         },
     )
     assert r.status_code == 200
     body = r.json()
-    assert body["status"] == "saved" and body["count"] == 2
+    expected_count = len(review_items.items_for("hausa"))
+    assert body["status"] == "saved" and body["count"] == expected_count
 
     session = db.get_session()
     try:
         from app import models
         rows = session.query(models.NativeReview).all()
-        assert len(rows) == 2
+        assert len(rows) == expected_count
         by_id = {r.item_id: r for r in rows}
         assert by_id["return_lead"].verdict == "ok"
+        assert by_id["return_lead"].english != "tampered"
+        assert by_id["return_lead"].draft != "tampered"
         assert by_id["redflag_0"].verdict == "correction"
         assert by_id["redflag_0"].correction == "farfadiya (revised)"
         assert by_id["redflag_0"].reviewer_name == "Malam Ibrahim Musa"
@@ -110,6 +122,7 @@ def test_submit_stores_rows(review_db):
     [
         ({"language": "klingon"}, 400),
         ({"reviewer_name": "   "}, 400),
+        ({"consent": ""}, 400),
         ({"items": "not json"}, 400),
         ({"items": "[]"}, 400),
         ({"items": json.dumps([{"item_id": "x", "verdict": "maybe"}])}, 400),
@@ -121,6 +134,7 @@ def test_submit_rejects_bad_input(review_db, overrides, expected_status):
     data = {
         "language": "hausa",
         "reviewer_name": "A. Reviewer",
+        "consent": "yes",
         "items": _items_payload(),
     }
     data.update(overrides)
@@ -134,6 +148,7 @@ def test_export_csv(review_db):
         data={
             "language": "hausa",
             "reviewer_name": "Malam Ibrahim Musa",
+            "consent": "yes",
             "items": _items_payload(),
         },
     )

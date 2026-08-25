@@ -1,4 +1,4 @@
-"""Clinical validation of evaluation vignettes, with inter-rater
+"""Clinician review workflow for evaluation vignettes, with inter-rater
 reliability.
 
 The 50 vignettes are AI-drafted, so their labels are proposals until

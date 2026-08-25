@@ -263,7 +263,7 @@ def security_status() -> dict:
 @app.get("/api/observability/ai-events")
 def ai_events(limit: int = 50) -> list[dict]:
     """Recent LLM calls: model, duration, tokens, estimated cost, outcome.
-    Anonymised — no prompt or reply text is stored."""
+    No prompt or reply text is stored."""
     return records.ai_events(min(max(limit, 1), 200))
 
 
@@ -281,11 +281,11 @@ def migrations_status() -> dict:
     return {"applied": migrations.applied_migrations()}
 
 
-# ── Surveillance dashboard API (anonymised aggregates only) ─────
+# ── Research dashboard API (pseudonymised aggregates) ───────────
 
 @app.get("/api/stats/summary")
 def stats_summary(days: int = 0) -> dict:
-    """days=0 means all time; every surveillance view takes the same
+    """days=0 means all time; every research-analytics view takes the same
     window so the dashboard can apply one selector across pages."""
     return records.summary(days or None)
 
@@ -509,7 +509,7 @@ def export_sus_csv() -> Response:
     )
 
 
-# ── Native-speaker validation of draft translations ─────────────
+# ── Native-speaker linguistic review of selected translations ───
 
 _NATIVE_TEMPLATE = Path(__file__).resolve().parent / "templates" / "native_review.html"
 _REVIEW_LANGS = {"hausa", "yoruba", "igbo"}
@@ -536,6 +536,7 @@ def submit_native_review(
     organisation: str = Form(""),
     assessment: str = Form(""),
     comments: str = Form(""),
+    consent: str = Form(""),
     items: str = Form(...),
 ) -> dict:
     """Store one reviewer's verdicts (public: reviewers get a link)."""
@@ -543,12 +544,31 @@ def submit_native_review(
         raise HTTPException(status_code=400, detail="language must be hausa, yoruba or igbo")
     if not reviewer_name.strip():
         raise HTTPException(status_code=400, detail="reviewer_name is required")
+    if consent.strip().lower() != "yes":
+        raise HTTPException(status_code=400, detail="reviewer consent is required")
     try:
         parsed = json.loads(items)
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="items must be valid JSON")
     if not isinstance(parsed, list) or not parsed:
         raise HTTPException(status_code=400, detail="items must be a non-empty list")
+
+    # Never trust the public form to supply the text that becomes research
+    # evidence. Require the complete canonical item set for the selected
+    # language, reject duplicates/unknown IDs, and persist server-side text.
+    canonical_items = {item["key"]: item for item in review_items.items_for(language)}
+    submitted_ids = [str(item.get("item_id", "")) for item in parsed if isinstance(item, dict)]
+    optional_markers = submitted_ids.count("word_markers")
+    canonical_ids = [item_id for item_id in submitted_ids if item_id != "word_markers"]
+    if (
+        len(canonical_ids) != len(set(canonical_ids))
+        or set(canonical_ids) != set(canonical_items)
+        or optional_markers > 1
+    ):
+        raise HTTPException(
+            status_code=400,
+            detail="items must contain the complete canonical review set exactly once",
+        )
     rows = []
     for it in parsed:
         if not isinstance(it, dict):
@@ -560,6 +580,22 @@ def submit_native_review(
             raise HTTPException(
                 status_code=400, detail="correction text is required when verdict is correction"
             )
+        item_id = str(it.get("item_id", ""))
+        if item_id == "word_markers":
+            markers = review_items.markers(language)
+            canonical_english = "language-detection word lists"
+            canonical_draft = ", ".join(markers["words"] + markers["phrases"])
+            item_type = "string"
+        else:
+            canonical = canonical_items[item_id]
+            canonical_english = canonical["english"]
+            canonical_draft = canonical["draft"]
+            item_type = (
+                "string"
+                if item_id.startswith(("redflag_", "return_"))
+                or item_id == "emergency_override"
+                else "vignette"
+            )
         rows.append(models.NativeReview(
             language=language,
             reviewer_name=reviewer_name.strip(),
@@ -567,10 +603,10 @@ def submit_native_review(
             organisation=organisation.strip(),
             assessment=assessment.strip(),
             comments=comments.strip(),
-            item_id=str(it.get("item_id", ""))[:60],
-            item_type=str(it.get("item_type", "string"))[:16],
-            english=str(it.get("english", ""))[:4000],
-            draft=str(it.get("draft", ""))[:4000],
+            item_id=item_id[:60],
+            item_type=item_type,
+            english=canonical_english[:4000],
+            draft=canonical_draft[:4000],
             verdict=verdict,
             correction=str(it.get("correction", "")).strip()[:4000],
         ))
@@ -616,7 +652,7 @@ def export_native_reviews() -> Response:
     )
 
 
-# ── Clinical validation of evaluation vignettes ─────────────────
+# ── Clinician review workflow for evaluation vignettes ──────────
 
 @app.get("/api/vignettes")
 def list_vignettes() -> list[dict]:
@@ -677,7 +713,7 @@ def export_vignettes(include_pending: bool = False) -> Response:
 
 @app.get("/api/export/triage.csv")
 def export_triage_csv() -> Response:
-    """Anonymised triage records as CSV, for offline analysis."""
+    """Pseudonymised triage-event records as CSV, for offline analysis."""
     rows = records.export_rows()
     columns = [
         "session_id",

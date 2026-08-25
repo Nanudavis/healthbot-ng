@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>HealthBot NG — Native Speaker Validation</title>
+<title>HealthBot NG — Native Speaker Review</title>
 <style>
   :root {
     --ink:#0B3B37; --teal:#12756B; --teal-soft:#E3F0EE; --paper:#F4F7F6;
@@ -90,13 +90,17 @@
   .sticky { position:sticky; bottom:0; background:var(--paper);
             padding:10px 0 14px; }
   .progress { font-size:12px; color:var(--muted); margin-top:10px; text-align:center; }
+  .consent { display:flex; gap:9px; align-items:flex-start; margin-top:14px;
+             padding:11px 12px; background:#FAFCFB; border:1px solid var(--line);
+             border-radius:10px; font-size:12.5px; color:var(--muted); }
+  .consent input { margin-top:3px; }
 </style>
 </head>
 <body>
 <header>
   <div class="wrap">
     <b>HealthBot NG</b>
-    <small>Native-speaker validation · <span id="langname"></span></small>
+    <small>Native-speaker linguistic review · <span id="langname"></span></small>
   </div>
 </header>
 
@@ -104,15 +108,17 @@
   <div id="form-area">
     <div class="card">
       <p class="intro">
-        <b>Thank you for reviewing our translations.</b> HealthBot NG is a
-        multilingual health-triage system for Nigeria. Read each draft
+        <b>Thank you for reviewing these selected translations.</b> HealthBot NG is a
+        master&rsquo;s research prototype for multilingual health guidance in Nigeria.
+        This form is a bounded linguistic review, not clinical validation. Read each draft
         translation and compare it with the English meaning. Tap
         <b>✓ OK</b> if it is accurate, natural and respectful; tap
         <b>✎ Correction</b> and type the corrected version if anything is
         wrong, awkward, too formal, or medically unclear. The
         <b>emergency override</b> and <b>return signs</b> are safety-critical —
         flag anything that could be misunderstood. Your name and role will be
-        recorded in the project report as the validation record.
+        stored with this review and may be summarised in the project report as
+        evidence of the linguistic review.
       </p>
       <div class="langs">
         <a href="/native-review?language=hausa" class="on">Hausa</a>
@@ -137,6 +143,10 @@
       </div>
       <label class="f">General comments (optional)</label>
       <textarea id="comments" placeholder="Anything about tone, dialect choice, medical clarity…"></textarea>
+      <label class="consent">
+        <input type="checkbox" id="consent">
+        <span>I consent to my name, role, organisation and review responses being stored for this academic project and summarised in its report. *</span>
+      </label>
     </div>
 
     <div class="card">
@@ -257,6 +267,12 @@ document.getElementById("submit").onclick = async () => {
   msg.textContent = "";
   const name = document.getElementById("name").value.trim();
   if (!name) { msg.className = "msg err"; msg.textContent = "Please enter your full name."; window.scrollTo(0,0); return; }
+  if (!document.getElementById("consent").checked) {
+    msg.className = "msg err";
+    msg.textContent = "Please confirm consent before submitting the review.";
+    window.scrollTo(0,0);
+    return;
+  }
   if (Object.values(state).filter(v => v && v.verdict).length < total) {
     msg.className = "msg err";
     msg.textContent = "Please review every item before submitting (" + total + " items in total).";
@@ -296,6 +312,7 @@ document.getElementById("submit").onclick = async () => {
         organisation: document.getElementById("org").value,
         assessment: assessment,
         comments: document.getElementById("comments").value,
+        consent: "yes",
         items: JSON.stringify(payload),
       }),
     });

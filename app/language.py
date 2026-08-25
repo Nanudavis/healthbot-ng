@@ -4,7 +4,7 @@ GPT-4o natively detects and follows the user's language — there is no
 translation layer. This heuristic covers what the LLM can't:
 - localising the deterministic safety messages (red-flag emergency
   override, API-down fallback), which must work with no model call;
-- tagging sessions by language for the surveillance dashboard and the
+- tagging sessions by language for the research analytics dashboard and the
   per-language accuracy comparison in Chapter 5.
 
 The LLM also reports the language in its JSON each turn; that report

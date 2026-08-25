@@ -1,33 +1,30 @@
-# Deploy-focused git repo for Railway (github build)
 .venv/
 __pycache__/
-*.pyc
-.pytest_cache/
+*.py[cod]
 .env
-node_modules/
-dashboard/node_modules/
-
-# local development / thesis artifacts — not needed in the image
-scripts/
-docs/
-eval/
-!eval/vignettes.csv
-figures/
-*.docx
-*.pdf.tmp
-HealthBotNG_UI_Design.html
-comparison*
-README.md
-CLAUDE.md
-COMPLETION_GUIDE.md
-.env.example
-data/*.db
-data/*.db-journal
-dashboard/src/
-dashboard/package.json
-dashboard/package-lock.json
-dashboard/vite.config.js
-dashboard/index.html
+.env.*
+!.env.example
+.pytest_cache/
+.ruff_cache/
 .DS_Store
-*.pdf
-*.pptx
+.tmp/
+.codex/
+dashboard/node_modules/
+dashboard/dist/
+data/healthbot.db
+data/index/
+eval/results.csv
+eval/results.md
+eval/comparison.csv
+eval/comparison.md
+eval/transcripts*.md
+eval/final_metrics.json
+eval/final_metrics.md
+
+# Local sibling work copies. The canonical Git worktree is the parent
+# repository root; these directories are retained only as recoverable backups.
+/Advance Web App/
+/HealthBOTNG/
+/HealthBOTNG copy/
+/HealthBOTNG copy 2/
+/untitled folder/
