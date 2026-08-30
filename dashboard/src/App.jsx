@@ -50,16 +50,66 @@ async function getJSON(path) {
 }
 
 const PAGES = [
-  { id: 'overview', label: 'Overview', title: 'National overview' },
-  { id: 'symptoms', label: 'Symptom trends', title: 'Symptom trends' },
-  { id: 'geography', label: 'States & LGAs', title: 'States & LGAs' },
-  { id: 'languages', label: 'Languages', title: 'Language analysis' },
-  { id: 'facilities', label: 'Facility routing', title: 'Facility routing' },
-  { id: 'validation', label: 'Clinician review', title: 'Clinician review workflow' },
-  { id: 'sus', label: 'Usability (SUS)', title: 'Usability study — SUS' },
-  { id: 'export', label: 'Data export', title: 'Data export' },
-  { id: 'knowledge', label: 'Knowledge base', title: 'Knowledge base — clinical protocols' },
-  { id: 'settings', label: 'Settings', title: 'Settings — AI provider' },
+  {
+    id: 'overview',
+    label: 'Overview',
+    title: 'Research overview',
+    subtitle: 'Pseudonymised triage records · not population surveillance',
+  },
+  {
+    id: 'symptoms',
+    label: 'Symptom trends',
+    title: 'Symptom trends',
+    subtitle: 'Descriptive research signals · not disease-prevalence estimates',
+  },
+  {
+    id: 'geography',
+    label: 'States & LGAs',
+    title: 'States & LGAs',
+    subtitle: 'Sample-registry routing data · not national coverage',
+  },
+  {
+    id: 'languages',
+    label: 'Languages',
+    title: 'Language analysis',
+    subtitle: 'Descriptive subsets · not comparative language validation',
+  },
+  {
+    id: 'facilities',
+    label: 'Facility routing',
+    title: 'Facility routing',
+    subtitle: 'Twelve-site demonstration registry · verify before external use',
+  },
+  {
+    id: 'validation',
+    label: 'Clinician review',
+    title: 'Clinician label-review workflow',
+    subtitle: 'Research workflow · clinical validation is not yet established',
+  },
+  {
+    id: 'sus',
+    label: 'Usability (SUS)',
+    title: 'Usability study workflow — SUS',
+    subtitle: 'Instrument implemented · participant usability evidence not yet collected',
+  },
+  {
+    id: 'export',
+    label: 'Data export',
+    title: 'Data export',
+    subtitle: 'Pseudonymised triage export · stable hashes remain linkable',
+  },
+  {
+    id: 'knowledge',
+    label: 'Knowledge base',
+    title: 'Knowledge base — selected protocols',
+    subtitle: 'Prototype corpus · strict grounding remains a pre-deployment requirement',
+  },
+  {
+    id: 'settings',
+    label: 'Settings',
+    title: 'Settings — AI provider',
+    subtitle: 'Configuration interface · every provider change requires re-evaluation',
+  },
 ]
 
 export default function App() {
@@ -132,7 +182,7 @@ export default function App() {
         <div className="topbar">
           <div>
             <h3>{current.title}</h3>
-            <div className="sub">Anonymised · no personal data collected</div>
+            <div className="sub">{current.subtitle}</div>
           </div>
           <div className="topbar-right">
             <div className="row-actions">
@@ -1393,21 +1443,21 @@ function ClinicalValidation() {
     <>
       <div className="panel" style={{ marginBottom: 16 }}>
         <h4>
-          Validation progress{' '}
-          <span>· AI-drafted labels reviewed by a clinician</span>
+          Label-review progress{' '}
+          <span>· researcher-assigned draft levels reviewed by a clinician</span>
         </h4>
         {prog && (
           <>
             <div className="kpis" style={{ marginBottom: 12 }}>
               <div className="kpi">
-                <div className="lab">Validated</div>
+                <div className="lab">Reviewed</div>
                 <div className="val">
                   {prog.validated}/{prog.total}
                 </div>
                 <div className="d">{prog.pending} pending</div>
               </div>
               <div className="kpi">
-                <div className="lab">Clinician agreed</div>
+                <div className="lab">Draft agreed</div>
                 <div className="val">{prog.agreed}</div>
                 <div className="d">drafted label confirmed</div>
               </div>
@@ -1417,13 +1467,13 @@ function ClinicalValidation() {
                 <div className="d">label changed by clinician</div>
               </div>
               <div className="kpi">
-                <div className="lab">Agreement rate</div>
+                <div className="lab">Observed agreement</div>
                 <div className="val">
                   {prog.agreement_rate === null
                     ? '—'
                     : `${Math.round(prog.agreement_rate * 100)}%`}
                 </div>
-                <div className="d">report this in methodology</div>
+                <div className="d">descriptive review-workflow result</div>
               </div>
             </div>
             <div className="bar" style={{ height: 10 }}>
@@ -1476,7 +1526,7 @@ function ClinicalValidation() {
       </div>
 
       <div className="panel" style={{ marginBottom: 16 }}>
-        <h4>Validating clinician</h4>
+        <h4>Reviewing clinician</h4>
         <input
           className="inp"
           placeholder="e.g. Dr Emmanuel Mkpojiogu"
@@ -1484,8 +1534,8 @@ function ClinicalValidation() {
           onChange={(e) => saveValidator(e.target.value)}
         />
         <p className="muted" style={{ fontSize: 12, marginTop: 8 }}>
-          Recorded against every verdict, with a timestamp — this is the audit
-          trail your methodology section cites.
+          Recorded against each reviewed draft level with a timestamp. Submitted
+          reviews require documented provenance before they are treated as evidence.
         </p>
         <div className="row-actions" style={{ marginTop: 14 }}>
           <label className="btn btn-ghost">
@@ -1498,7 +1548,7 @@ function ClinicalValidation() {
             />
           </label>
           <a className="btn" href="/api/vignettes/export.csv" download>
-            Export validated CSV
+            Export review CSV
           </a>
         </div>
         {msg && (
@@ -1520,7 +1570,7 @@ function ClinicalValidation() {
               className={`chip${filter === f ? ' chip-on' : ''}`}
               onClick={() => setFilter(f)}
             >
-              {f}
+              {f === 'validated' ? 'reviewed' : f}
             </button>
           ))}
         </div>
